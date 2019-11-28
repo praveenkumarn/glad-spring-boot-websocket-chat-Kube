@@ -2,7 +2,7 @@
  
 /**
         * Sample Jenkinsfile for SpringBoot-Chat Application Pipeline
-        * from https://github.com/praveenkumarn/spring-boot-websocket-chat-Kube/edit/master/Jenkinsfile
+        * from https://github.com/praveenkumarn/spring-boot-websocket-chat-Kube/edit/develop/Jenkinsfile
         * by Praveen
  */
 
