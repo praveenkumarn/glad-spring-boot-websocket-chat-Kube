@@ -9,44 +9,65 @@
 
 timestamps {
 
-node ('Kubernetes') { 
+node ('Kubernetes') {
 
-	stage ('K8s_BnD - Checkout') {
- 	 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: 'https://github.com/praveenkumarn/spring-boot-websocket-chat-demo']]]) 
+	stage ('KGL_Complete_CI - Checkout') {
+ 	 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '00a9b575-7866-4f8b-9995-6ea0281fa5b8', url: 'http://gitlab.cmtcde.com/root/spring-boot-websocket-chat-Kube.git']]]) 
 	}
-	stage ('K8s_BnD - Build') {
+	stage ('KGL_Complete_CI - Build') {
  	
-	withMaven(maven: 'maven') { 
+	withMaven(maven: 'M2_HOME') { 
  			if(isUnix()) {
- 				sh "mvn -f pom.xml clean package " 
+ 				sh "mvn -f pom.xml clean verify"
+                sh "mvn -f pom.xml org.apache.maven.plugins:maven-jxr-plugin:2.5:jxr"
+                sh "mvn -f pom.xml org.apache.maven.plugins:maven-pmd-plugin:3.10.0:pmd"
+                sh "mvn -f pom.xml org.apache.maven.plugins:maven-pmd-plugin:3.10.0:cpd"
+                sh "mvn -f pom.xml org.apache.maven.plugins:maven-checkstyle-plugin:3.0.0:checkstyle"
+                sh "mvn -f pom.xml org.codehaus.mojo:findbugs-maven-plugin:3.0.1:findbugs"
+                sh "mvn -f pom.xml test org.codehaus.mojo:cobertura-maven-plugin:2.7:cobertura -Dcobertura.report.format=xml"
+                sh "mvn -f pom.xml package " 
 			} else { 
- 				bat "mvn -f pom.xml clean package " 
+ 				bat "mvn -f pom.xml clean verify"
+                bat "mvn -f pom.xml org.apache.maven.plugins:maven-jxr-plugin:2.5:jxr"
+                bat "mvn -f pom.xml org.apache.maven.plugins:maven-pmd-plugin:3.10.0:pmd"
+                bat "mvn -f pom.xml org.apache.maven.plugins:maven-pmd-plugin:3.10.0:cpd"
+                bat "mvn -f pom.xml org.apache.maven.plugins:maven-checkstyle-plugin:3.0.0:checkstyle"
+                bat "mvn -f pom.xml org.codehaus.mojo:findbugs-maven-plugin:3.0.1:findbugs"
+                bat "mvn -f pom.xml test org.codehaus.mojo:cobertura-maven-plugin:2.7:cobertura -Dcobertura.report.format=xml"
+                bat "mvn -f pom.xml package " 
 			} 
- 		}		// Shell build step
+ 		}		
+ 	
+  stage('SonarQube analysis') {
+     def scannerHome = tool 'SonarScanner';
+     withSonarQubeEnv('SonarQube') { 
+      sh "${scannerHome}/bin/sonar-scanner"
+    }
+  }
+
+  
+  	// Shell build step
 sh """ 
 #!/bin/bash
 pwd
 id
 ls -lrt
 java -version
-hostname
 
 docker image ls
 docker container ls
 
 docker build -t spring-boot-websocket-chat-demo .
-docker image ls
 
 docker tag spring-boot-websocket-chat-demo praveenkumarnagarajan/spring-boot-websocket-chat-demo:0.0.1-SNAPSHOT
+
 cat ~/pass.txt | docker login --username praveenkumarnagarajan --password-stdin
+
 docker push praveenkumarnagarajan/spring-boot-websocket-chat-demo:0.0.1-SNAPSHOT 
-docker pull praveenkumarnagarajan/spring-boot-websocket-chat-demo:0.0.1-SNAPSHOT
-
-docker image ls
-
-
- """ 
- cleanWs()
+ """
+  cleanWs()
+		// Checkstyle report
+		step([$class: 'CheckStylePublisher', canComputeNew: false, defaultEncoding: '', healthy: '90', pattern: '**/checkstyle-result.xml. ', unHealthy: '40']) 
 	}
 }
 }
