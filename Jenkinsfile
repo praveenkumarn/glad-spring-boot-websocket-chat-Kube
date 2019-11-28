@@ -18,21 +18,11 @@ node ('DockerAgent') {
  	
 	withMaven(maven: 'M2_HOME') { 
  			if(isUnix()) {
- 				sh "mvn -f pom.xml clean verify"
-                sh "mvn -f pom.xml org.apache.maven.plugins:maven-jxr-plugin:2.5:jxr"
-                sh "mvn -f pom.xml org.apache.maven.plugins:maven-pmd-plugin:3.10.0:pmd"
-                sh "mvn -f pom.xml org.apache.maven.plugins:maven-pmd-plugin:3.10.0:cpd"
-                sh "mvn -f pom.xml org.apache.maven.plugins:maven-checkstyle-plugin:3.0.0:checkstyle"
-                sh "mvn -f pom.xml org.codehaus.mojo:findbugs-maven-plugin:3.0.1:findbugs"
+ 				sh "mvn -f pom.xml clean verify org.apache.maven.plugins:maven-jxr-plugin:2.5:jxr org.apache.maven.plugins:maven-pmd-plugin:3.10.0:pmd org.apache.maven.plugins:maven-pmd-plugin:3.10.0:cpd org.apache.maven.plugins:maven-checkstyle-plugin:3.0.0:checkstyle org.codehaus.mojo:findbugs-maven-plugin:3.0.1:findbugs"
                 sh "mvn -f pom.xml test org.codehaus.mojo:cobertura-maven-plugin:2.7:cobertura -Dcobertura.report.format=xml"
                 sh "mvn -f pom.xml package " 
 			} else { 
- 				bat "mvn -f pom.xml clean verify"
-                bat "mvn -f pom.xml org.apache.maven.plugins:maven-jxr-plugin:2.5:jxr"
-                bat "mvn -f pom.xml org.apache.maven.plugins:maven-pmd-plugin:3.10.0:pmd"
-                bat "mvn -f pom.xml org.apache.maven.plugins:maven-pmd-plugin:3.10.0:cpd"
-                bat "mvn -f pom.xml org.apache.maven.plugins:maven-checkstyle-plugin:3.0.0:checkstyle"
-                bat "mvn -f pom.xml org.codehaus.mojo:findbugs-maven-plugin:3.0.1:findbugs"
+ 				bat "mvn -f pom.xml clean verify org.apache.maven.plugins:maven-jxr-plugin:2.5:jxr org.apache.maven.plugins:maven-pmd-plugin:3.10.0:pmd org.apache.maven.plugins:maven-pmd-plugin:3.10.0:cpd org.apache.maven.plugins:maven-checkstyle-plugin:3.0.0:checkstyle org.codehaus.mojo:findbugs-maven-plugin:3.0.1:findbugs"
                 bat "mvn -f pom.xml test org.codehaus.mojo:cobertura-maven-plugin:2.7:cobertura -Dcobertura.report.format=xml"
                 bat "mvn -f pom.xml package " 
 			} 
