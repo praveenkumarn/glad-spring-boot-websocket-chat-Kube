@@ -9,7 +9,7 @@
 
 timestamps {
 
-node ('Kubernetes') {
+node ('DockerAgent') {
 
 	stage ('KGL_Complete_CI - Checkout') {
  	 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '00a9b575-7866-4f8b-9995-6ea0281fa5b8', url: 'http://gitlab.cmtcde.com/root/spring-boot-websocket-chat-Kube.git']]]) 
@@ -46,7 +46,7 @@ node ('Kubernetes') {
   }
 
   
-  	// Shell build step
+ // Docker Image build step
 sh """ 
 #!/bin/bash
 pwd
