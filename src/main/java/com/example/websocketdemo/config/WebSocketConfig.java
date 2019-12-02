@@ -20,8 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
         registry.enableSimpleBroker("/topic");   // Enables a simple in-memory broker
-        registry.enableSimpleBroker("/topic");
-
+        
         //   Use this for enabling a Full featured broker like RabbitMQ
 
         /*
@@ -32,4 +31,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setClientPasscode("guest");
         */
     }
+
+     @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws").withSockJS();
+    }
+
 }
